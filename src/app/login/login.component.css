@@ -1,0 +1,11 @@
+
+.card-header{
+    background: #79a9e0;
+}
+
+img {
+    margin-top: 2px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+  }

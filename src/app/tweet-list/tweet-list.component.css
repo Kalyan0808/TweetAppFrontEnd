@@ -1,0 +1,40 @@
+.avatar{
+    margin-top: 16px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+
+.right {
+    position: relative;
+    background: aqua;
+    text-align: right;
+    min-width: 45%;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    float: right;
+    right: 20px;
+  }
+  
+  .right::before {
+    content: '';
+    position: absolute;
+    visibility: visible;
+    top: -1px;
+    right: -10px;
+    border: 10px solid transparent;
+    border-top: 10px solid #ccc;
+  }
+  
+  .right::after {
+    content: '';
+    position: absolute;
+    visibility: visible;
+    top: 0px;
+    right: -8px;
+    border: 10px solid transparent;
+    border-top: 10px solid aqua;
+    clear: both;
+  }
