@@ -1,28 +1,34 @@
 import pandas as pd
 
+# Load full extracts
 dev = pd.read_excel("dev_full.xlsx")
 prd = pd.read_excel("prd_full.xlsx")
 
-# Only use required cols for comparison
-compare_df = dev.merge(
-    prd,
-    on=["tgt_sys", "tgt_obj"],
+# Merge using correct composite key
+df = prd.merge(
+    dev,
+    on=["tgt_sys", "appl_cntrl_id"],
     how="outer",
-    suffixes=("_dev", "_prd")
+    suffixes=("_prd", "_dev"),
+    indicator=True
 )
 
+# Status logic (PRD is source of truth)
 def get_status(row):
-    if pd.isna(row["load_nam_prd"]):
-        return "EXTRA_IN_DEV"
-    elif pd.isna(row["load_nam_dev"]):
+    if row["_merge"] == "left_only":
         return "MISSING_IN_DEV"
-    elif row["load_nam_dev"] != row["load_nam_prd"]:
+    elif row["_merge"] == "right_only":
+        return "EXTRA_IN_DEV"
+    elif row["load_nam_prd"] != row["load_nam_dev"]:
         return "WORKFLOW_MISMATCH"
     else:
         return "MATCH"
 
-compare_df["status"] = compare_df.apply(get_status, axis=1)
+df["status"] = df.apply(get_status, axis=1)
 
-final_df = compare_df[compare_df["status"] != "MATCH"]
+# Keep only issues
+final_df = df[df["status"] != "MATCH"]
 
 final_df.to_excel("final_comparison.xlsx", index=False)
+
+print("Comparison done")
